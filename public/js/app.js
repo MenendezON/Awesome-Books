@@ -1,8 +1,11 @@
-/* eslint-disable no-unused-vars */
 const menu = document.querySelectorAll('.item-menu');
+const modal = document.querySelectorAll('.modal');
+const dismiss = document.querySelectorAll('.dismiss');
 const h1 = document.querySelector('h1');
 const contain = document.querySelector('.contain');
 const currentDate = document.querySelector('.current-date p');
+
+const upLoadFile = document.querySelector('#cover');
 
 class ListOfBooks {
   books;
@@ -68,8 +71,8 @@ class ListOfBooks {
       th14.textContent = bk.created_at;
       const th15 = document.createElement('td');
       th15.innerHTML = `
-      <a href="#" onclick="popupBook(${i})"><i class="fa fa-search-plus" aria-hidden="true"></i></a> | 
-      <a href="#" onclick="removeBook(${i})"><i class="fa fa-trash-o" aria-hidden="true"></i></a>`;
+      <a href="#" class="modal" id="${i}" onclick="popupBook(${i})"><i class="fa fa-search-plus" aria-hidden="true"></i></a> | 
+      <a href="#" class="dismiss" id="${i}" onclick="removeBook(${i})"><i class="fa fa-trash-o" aria-hidden="true"></i></a>`;
       tr1.appendChild(th11);
       tr1.appendChild(th12);
       tr1.appendChild(th13);
@@ -82,7 +85,6 @@ class ListOfBooks {
 }
 const listofbooks = new ListOfBooks();
 
-/* eslint-disable no-unused-vars */
 const menuActive = (menu, active) => {
   for (let i = 0; i < menu.length; i += 1) {
     menu[i].classList.remove('active');
@@ -206,7 +208,7 @@ const generateCurrentDate = () => {
   currentDate.innerHTML = formatDate();
 };
 
-window.addEventListener('DOMContentLoaded', (event) => {
+window.addEventListener('DOMContentLoaded', () => {
   setInterval(generateCurrentDate, 1000);
   changeTitle();
   menuActive(menu, menu[0]);
@@ -248,6 +250,10 @@ const updloadImage = () => {
   }
 };
 
+upLoadFile?.addEventListener('change', () => {
+  updloadImage();
+});
+
 const removeBook = (index) => {
   listofbooks.removeBook(index);
   listofbooks.getData();
@@ -272,6 +278,7 @@ const popupBook = (index) => {
   link.innerText = 'See less';
   link.setAttribute('onclick', 'closeBtn()');
   link.setAttribute('href', '#');
+  link.setAttribute('id', 'closeBtn');
   side1.appendChild(link);
 
   back.appendChild(popup);
@@ -279,7 +286,25 @@ const popupBook = (index) => {
   return false;
 };
 
+const close = document.getElementById('closeBtn');
+
 const closeBtn = () => {
   document.body.removeChild(document.querySelector('.fullScreen'));
   return false;
 };
+
+close?.addEventListener('click', () => {
+  closeBtn();
+});
+
+modal.forEach((x, i) => {
+  modal[i].addEventListener('click', () => {
+    popupBook(i);
+  });
+});
+
+dismiss.forEach((x, i) => {
+  dismiss[i].addEventListener('click', () => {
+    removeBook(i);
+  });
+});
